@@ -1,0 +1,647 @@
+{% extends "layout.html" %}
+{% block body %}
+ 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+function captureCrack(inten){
+  getGPS();
+  console.log(lat/100);
+  console.log(lon/100);
+  lat = Number(lat.toFixed(9));
+  lon = Number(lon.toFixed(9));
+  document.getElementById("crackTR").innerHTML+="<tr><td>"+sno+"</td><td>"+lat/100+"</td><td>"+lon/100+"</td><td>"+inten+"</td><td><img src='http://192.168.43.165/?action=snapshot&time="+(new Date()).getTime()+"'></td></tr>";
+  sno = sno+1;
+  $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "9-"+lat/100+"-"+lon/100+"-"+((inten).toFixed(2))+"-"+new Date().toLocaleString('en-IN').split(', ')[0]},
+          success: function(response) {
+            // alert(response);
+            // lon = response;
+          },
+          error: function(xhr) {
+          }
+        });
+  // lat=11.11111111
+// lng=11.11111111
+// intensity=5
+// var client = new HttpClient();
+// client.get("http://3.16.4.70:8080/addcrack?x="+lat/100+"&y="+lon/100+"&i="+inten+"&date="+new Date().toLocaleString('en-IN'), function(response) {
+//   if(response=="1"){
+//     //Sucessfully Saved to database
+//     // alert("Sent")
+//   }
+//   else{
+//     // alert(response)
+//     //Error Occured (Not Specific)
+//   }
+// });
+}
+document.addEventListener('keydown', function(event) {
+
+  if (event.code == 'KeyR') {
+    // captureCrack(1);
+    $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "3"},
+          
+  });
+    // alert('Undo!');
+  }
+});
+document.addEventListener('keydown', function(event) {
+  if (event.code == 'KeyW') {
+    $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "3"},
+          
+  });
+    // alert('Undo!');
+  }
+});
+document.addEventListener('keydown', function(event) {
+  if (event.code == 'KeyQ') {
+    $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "4"},
+          
+  });
+    // alert('Undo!');
+  }
+});
+// document.addEventListener('keyup', function(event) {
+//   if (event.code == 'KeyW') {
+//     $.ajax({
+//           url: "/private",
+//           type: "get",
+//           data: {jsdata: "4"},
+          
+//   });
+//     // alert('asda!');
+//   }
+// });
+document.addEventListener('keyup', function(event) {
+  if (event.code == 'KeyS') {
+    $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "5"},
+          
+  });
+    // alert('asda!');
+  }
+});
+// document.addEventListener('keyup', function(event) {
+//   if (event.code == 'KeyS') {
+//     $.ajax({
+//           url: "/private",
+//           type: "get",
+//           data: {jsdata: "4"},
+          
+//   });
+//     // alert('asda!');
+//   }
+// });
+
+//Function that calls the server
+var HttpClient = function() {
+    this.get = function(aUrl, aCallback) {
+        var anHttpRequest = new XMLHttpRequest();
+        anHttpRequest.onreadystatechange = function() { 
+            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                aCallback(anHttpRequest.responseText);
+        }
+        anHttpRequest.open( "GET", aUrl, true );            
+        anHttpRequest.send( null );
+    }
+}
+
+//Call this snipet anywhere
+
+function toggleSwitch(val){
+  document.getElementById('ultrasonic_toggle').checked=val;
+  document.getElementById('ultrasonic2_toggle').checked=val;
+  document.getElementById('ultrasonic3_toggle').checked=val;
+  document.getElementById('ultrasonic4_toggle').checked=val;
+}
+function sendCommand(){
+ 
+  // alert("asd");
+  var c = document.getElementById('command').value;
+  // alert(c);
+  $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: c},
+          
+  });
+}
+var sno = 0;
+
+var cnt_ultrasonic;
+var dps_ultrasonic=[];
+var options={};
+var dataLength_ultrasonic = 40;
+var chart_ultrasonic;
+
+var cnt_ultrasonic2;
+var dps_ultrasonic2=[];
+var options={};
+var dataLength_ultrasonic2 = 40;
+var chart_ultrasonic2;
+
+var cnt_ultrasonic3;
+var dps_ultrasonic3=[];
+var options={};
+var dataLength_ultrasonic3 = 40;
+var chart_ultrasonic3;
+
+var cnt_ultrasonic4;
+var dps_ultrasonic4=[];
+var options={};
+var dataLength_ultrasonic4 = 40;
+var chart_ultrasonic4;
+
+var flagg=0;
+var flaggg=0;
+var last_data=0;
+var last_last_data=0;
+var temp_data = 0;
+var last_temp_data = 0;
+// var lat=0;
+// var lon=0;
+var lat = 1859.96895;
+var lon = 7387.16692;
+// 18.5996895,73.8716692
+// s
+
+
+window.onload = function() {
+
+
+cnt_ultrasonic=0;
+chart_ultrasonic = new CanvasJS.Chart("ultrasonic_chart", options = {
+  theme: "light2",
+  title: {
+    text: "Live Data"
+  },
+  data: [{
+    type: "spline",
+    dataPoints: dps_ultrasonic
+  }]
+});
+
+
+cnt_ultrasonic2=0;
+chart_ultrasonic2 = new CanvasJS.Chart("ultrasonic2_chart", options = {
+  theme: "light2",
+  title: {
+    text: "Live Data"
+  },
+  data: [{
+    type: "spline",
+    dataPoints: dps_ultrasonic2
+  }]
+});
+
+cnt_ultrasonic3=0;
+chart_ultrasonic3 = new CanvasJS.Chart("ultrasonic3_chart", options = {
+  theme: "light2",
+  title: {
+    text: "Live Data"
+  },
+  data: [{
+    type: "spline",
+    dataPoints: dps_ultrasonic3
+  }]
+});
+
+cnt_ultrasonic4=0;
+chart_ultrasonic4 = new CanvasJS.Chart("ultrasonic4_chart", options = {
+  theme: "light2",
+  title: {
+    text: "Live Data"
+  },
+  data: [{
+    type: "spline",
+    dataPoints: dps_ultrasonic4
+  }]
+});
+
+}
+
+// function addDataUltrasonic(data) {
+
+//     if(data!="reset"){
+//       if(data[1]*100>470 && flagg==0){
+//         flagg=1;
+//       }
+
+//       else if(data[1]*100>470 && flagg==1){
+//         // var inten = data[1]-4.7;
+//         flagg=0;
+        
+        
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Thermal Gap"});
+//       }
+//       else if(flagg==1 && data[1]*100<470){
+//         flagg=0;
+//         var inten = data[1]-4.7;
+//         captureCrack(inten);
+//         // flaggg=1;
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Craccck"});
+//       }
+//       else{
+//       // alert(data[0]);
+//         flagg=0;
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100)});
+//       }
+//       if (dps_ultrasonic.length > dataLength_ultrasonic) {
+//         dps_ultrasonic.shift();
+//       }
+//       chart_ultrasonic.render();
+//     }
+//     else{
+
+//     }
+  
+// }
+
+// function addDataUltrasonic(data) { // Latest
+
+//     if(data!="reset"){
+//       if(data[1]>3.6 && data[1]<6.5){
+//         var inten = data[1]-3.6;
+//         flagg+=1;
+//         // captureCrack(inten);
+        
+//         // dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Crack"});
+//       }
+//       if(data[1]>6.5 && flaggg==0){
+//         // flagg=1;
+//         flaggg=1;
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Thermal Gap"});
+//       }
+//       if(flagg==1){
+//         var inten = (6.5-data[1])*100/6.5;
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Crack"});
+//         captureCrack(inten);
+//         flagg=6;
+//       }
+//       else{
+//       // alert(data[0]);
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100)});
+//       }
+//       if (dps_ultrasonic.length > dataLength_ultrasonic) {
+//         dps_ultrasonic.shift();
+//       }
+//       chart_ultrasonic.render();
+//     }
+//     else{
+
+//     }
+  
+// }
+
+function getGPS(){
+  var gg = Math.random();
+  lat = lat+gg/100000
+  lon = lon+gg/100000
+  lat = Number(lat.toFixed(7));
+  lon = Number(lon.toFixed(7));
+  console.log(lat);
+  console.log(lon);
+}
+
+
+function addDataUltrasonic(data) {
+
+    if(data!="reset"){
+      // alert(data[0]);
+      dps_ultrasonic.push({x: data[0], y: parseInt(data[1])});
+      if (dps_ultrasonic.length > dataLength_ultrasonic) {
+        dps_ultrasonic.shift();
+      }
+      chart_ultrasonic.render();
+    }
+    else{
+
+    }
+  
+}
+
+// function addDataUltrasonic(data) {
+//     // getGPS();
+//     if(data!="reset"){
+//       temp_data = last_data;
+//       last_last_data = temp_data;
+//       last_data = last_temp_data;
+//       // console.log()
+      
+//       if(data[1]<=last_data && last_data>=3.6 && last_last_data<=last_data && last_data<=5){
+//         // var inten = data[1]-3.6;
+//         flagg=1;
+//         // captureCrack(inten);
+        
+//         // dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Crack"});
+//       }
+//       if(data[1]<=last_last_data && last_data>=4.2 && last_last_data<=last_data && flaggg==0){
+//         // flagg=1;
+//         // flaggg=1;
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Thermal Gap"});
+//       }
+//       if(flagg==1){
+//         var inten = (4.2-last_data)*100/4;
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100), indexLabel:"Crack"});
+        
+//         captureCrack(inten);
+//         flagg=0;
+//       }
+//       else{
+//       // alert(data[0]);
+//         dps_ultrasonic.push({x: data[0], y: parseInt(data[1]*100)});
+//       }
+//       if (dps_ultrasonic.length > dataLength_ultrasonic) {
+//         dps_ultrasonic.shift();
+//       }
+//       last_temp_data = data[1];
+//       chart_ultrasonic.render();
+
+//     }
+//     else{
+
+//     }
+  
+// }
+
+
+function clearDataUltrasonic(){
+      chart_ultrasonic=null;
+      dps_ultrasonic=[];
+      i=0;
+      chart_ultrasonic = new CanvasJS.Chart("ultrasonic_chart", options = {
+        theme: "light2",
+        title: {
+          text: "Live Data"
+        },
+        data: [{
+          type: "line",
+          dataPoints: dps_ultrasonic
+        }]
+      });
+      chart_ultrasonic.render();
+}
+
+
+function addDataUltrasonic2(data) {
+
+    if(data!="reset"){
+      // alert(data[0]);
+      dps_ultrasonic2.push({x: data[0], y: parseInt(data[1])});
+      if (dps_ultrasonic2.length > dataLength_ultrasonic2) {
+        dps_ultrasonic2.shift();
+      }
+      chart_ultrasonic2.render();
+    }
+    else{
+
+    }
+  
+}
+function clearDataUltrasonic2(){
+      chart_ultrasonic2=null;
+      dps_ultrasonic2=[];
+      i=0;
+      chart_ultrasonic2 = new CanvasJS.Chart("ultrasonic2_chart", options = {
+        theme: "light2",
+        title: {
+          text: "Live Data"
+        },
+        data: [{
+          type: "line",
+          dataPoints: dps_ultrasonic2
+        }]
+      });
+      chart_ultrasonic2.render();
+}
+
+
+function addDataUltrasonic3(data) {
+
+    if(data!="reset"){
+      // alert(data[0]);
+      dps_ultrasonic3.push({x: data[0], y: parseInt(data[1])});
+      if (dps_ultrasonic3.length > dataLength_ultrasonic3) {
+        dps_ultrasonic3.shift();
+      }
+      chart_ultrasonic3.render();
+    }
+    else{
+
+    }
+  
+}
+function clearDataUltrasonic3(){
+      chart_ultrasonic3=null;
+      dps_ultrasonic3=[];
+      i=0;
+      chart_ultrasonic3 = new CanvasJS.Chart("ultrasonic3_chart", options = {
+        theme: "light2",
+        title: {
+          text: "Live Data"
+        },
+        data: [{
+          type: "line",
+          dataPoints: dps_ultrasonic3
+        }]
+      });
+      chart_ultrasonic3.render();
+}
+
+
+function addDataUltrasonic4(data) {
+
+    if(data!="reset"){
+      // alert(data[0]);
+      dps_ultrasonic4.push({x: data[0], y: parseInt(data[1])});
+      if (dps_ultrasonic4.length > dataLength_ultrasonic4) {
+        dps_ultrasonic4.shift();
+      }
+      chart_ultrasonic4.render();
+    }
+    else{
+
+    }
+  
+}
+function clearDataUltrasonic4(){
+      chart_ultrasonic4=null;
+      dps_ultrasonic4=[];
+      i=0;
+      chart_ultrasonic4 = new CanvasJS.Chart("ultrasonic4_chart", options = {
+        theme: "light2",
+        title: {
+          text: "Live Data"
+        },
+        data: [{
+          type: "line",
+          dataPoints: dps_ultrasonic4
+        }]
+      });
+      chart_ultrasonic4.render();
+}
+
+
+
+
+setInterval(function(){
+    if ($("input[id=ultrasonic_toggle]").is(":checked")) {
+        $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "1"},
+          success: function(response) {
+            cnt_ultrasonic++;
+            addDataUltrasonic([cnt_ultrasonic,response]);
+            $("#ultrasonic_value").html(response);
+          },
+          error: function(xhr) {
+          }
+        });
+    } else {
+            // cnt_ultrasonic=0;
+            addDataUltrasonic("reset");
+            $("#ultrasonic_value").html("");
+        // alert("not checked");
+    }
+},300);
+setInterval(function(){
+    if ($("input[id=ultrasonic2_toggle]").is(":checked")) {
+        // alert("sad");
+        $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "2"},
+          success: function(response) {
+            // alert(response);
+            cnt_ultrasonic2++;
+            addDataUltrasonic2([cnt_ultrasonic2,response]);
+            $("#ultrasonic2_value").html(response);
+          },
+          error: function(xhr) {
+          }
+        });
+    } else {
+            addDataUltrasonic2("reset");
+            $("#ultrasonic2_value").html("");
+        // alert("not checked");
+    }
+},300);
+setInterval(function(){
+    if ($("input[id=ultrasonic3_toggle]").is(":checked")) {
+        // alert("sad");
+        $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "3"},
+          success: function(response) {
+            // alert(response);
+            cnt_ultrasonic3++;
+            addDataUltrasonic3([cnt_ultrasonic3,response]);
+            $("#ultrasonic3_value").html(response);
+          },
+          error: function(xhr) {
+          }
+        });
+    } else {
+            addDataUltrasonic3("reset");
+            $("#ultrasonic3_value").html("");
+        // alert("not checked");
+    }
+},300);
+setInterval(function(){
+    if ($("input[id=ultrasonic4_toggle]").is(":checked")) {
+        // alert("sad");
+        $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: "4"},
+          success: function(response) {
+            // alert(response);
+            cnt_ultrasonic4++;
+            addDataUltrasonic4([cnt_ultrasonic4,response]);
+            $("#ultrasonic4_value").html(response);
+          },
+          error: function(xhr) {
+          }
+        });
+    } else {
+            addDataUltrasonic4("reset");
+            $("#ultrasonic4_value").html("");
+        // alert("not checked");
+    }
+},300);
+// setInterval(function(){
+//     if ($("input[id=all_toggle]").is(":checked")) {
+//         toggleSwitch(true);
+        
+//     } else {
+//         toggleSwitch(false);
+//     }
+// },300);
+// setInterval(function(){
+//     cameraHTMLlink = "<iframe src='http://192.168.43.21/javascript_simple.html' height='380px' width='680px' frameborder='0' ></iframe>"
+//     cameraHTMLblankLink = "<iframe src='' height='380px' width='680px' frameborder='0' ></iframe>"
+//     $('input[id="camera_toggle"]').click(function(){
+//       // alert("asda");
+//     if ($("input[id=camera_toggle]").is(":checked")) {
+//         $("#camera_td").html(cameraHTMLlink);
+//     } else {
+//         $("#camera_td").html(cameraHTMLblankLink);
+//     }
+//     });
+// },1000);
+
+
+// setInterval(function(){
+//     // if ($("input[id=ultrasonic2_toggle]").is(":checked")) {
+//         // alert("sad");
+//         $.ajax({
+//           url: "/private",
+//           type: "get",
+//           data: {jsdata: "6"},
+//           success: function(response) {
+//             // alert(response);
+//             lat = response;
+//           },
+//           error: function(xhr) {
+//           }
+//         });
+// },10000);
+
+// setInterval(function(){
+//     // if ($("input[id=ultrasonic2_toggle]").is(":checked")) {
+//         // alert("sad");
+//         $.ajax({
+//           url: "/private",
+//           type: "get",
+//           data: {jsdata: "7"},
+//           success: function(response) {
+//             // alert(response);
+//             lon = response;
+//           },
+//           error: function(xhr) {
+//           }
+//         });
+// },10000);
+
+
+ 
+</script>
+
+</div>
+{% endblock %}

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Sensor Dashboard</title>
+  </div>
+  </div>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="/static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="/static/css/personal.css" />
+  <script src="/static/lib/jQuery.min.js"></script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+
+</head>
+
+<body>
+  <!-- TODO: Add div to flash messages by using bootstrap -->
+  <!-- TODO: Make it so that in autonomous mode, no data is sent -->
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Sensor Dashboard</a>
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="#"></a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Form -->
+  <div class="container mt-4">
+    <!-- Command Execution Input -->
+    <div class="row">
+      <div class="col-10">
+        <input class="form-control" placeholder="Command" type="text" id='command'>
+      </div>
+
+      <div class="col-2">
+        <div class="text-center">
+          <button class="btn btn-info btn-block" onclick="sendCommand()">Execute</button>
+          <input class="btn btn-info btn-block" type="checkbox" unchecked name="all_toggle" id="all_toggle"></td>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  
+<br>
+  <!-- Tables of data and location-->
+  <div class="container mt-2">
+    <div class="row">
+
+      <!-- Voltage -->
+      <div class="col-lg-6 col-md-12">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="2" align="center">Temperature</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >Toggle Switch</td>
+              <td><input type="checkbox" unchecked name="ultrasonic_toggle" id="ultrasonic_toggle"></td>
+            </tr>
+            
+          </thead>
+            
+          <tbody>
+            <tr>
+              <td class='ultrasonicDataHeading' >Temperature in C°: </td>
+              <td class="ultrasonic_value" id='ultrasonic_value' align="center" width="20%"></td>
+            </tr>
+            <tr>
+              <td class='graph' colspan="2" height="100" align="center" >
+              	<button class="clear_data_button" onclick="clearDataUltrasonic()">Clear Data</button>
+
+
+              	<div id="ultrasonic_chart" style="height: 300px; width: 100%;"></div>
+
+
+
+              </td>
+              	
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <!-- Current -->
+
+
+      <div class="col-lg-6 col-md-12">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="2" align="center">Voltage</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >Toggle Switch</td>
+              <td><input type="checkbox" unchecked name="ultrasonic2_toggle" id="ultrasonic2_toggle"></td>
+            </tr>
+            
+          </thead>
+            
+          <tbody>
+            <tr>
+              <td class='ultrasonic2DataHeading' >Voltage: </td>
+              <td class="ultrasonic2_value" id='ultrasonic2_value' align="center" width="20%"></td>
+            </tr>
+            <tr>
+              <td class='graph' colspan="2" height="100" align="center" >
+                <button class="clear_data_button" onclick="clearDataUltrasonic2()">Clear Data</button>
+
+
+                <div id="ultrasonic2_chart" style="height: 300px; width: 100%;"></div>
+
+
+
+              </td>
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div class="col-lg-6 col-md-12">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="2" align="center">Current Rating</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >Toggle Switch</td>
+              <td><input type="checkbox" unchecked name="ultrasonic3_toggle" id="ultrasonic3_toggle"></td>
+            </tr>
+            
+          </thead>
+            
+          <tbody>
+            <tr>
+              <td class='ultrasonic3DataHeading' >Current in Amperes: </td>
+              <td class="ultrasonic3_value" id='ultrasonic3_value' align="center" width="20%"></td>
+            </tr>
+            <tr>
+              <td class='graph' colspan="2" height="100" align="center" >
+                <button class="clear_data_button" onclick="clearDataUltrasonic3()">Clear Data</button>
+
+
+                <div id="ultrasonic3_chart" style="height: 300px; width: 100%;"></div>
+
+
+
+              </td>
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div class="col-lg-6 col-md-12">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="2" align="center">RPM</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >Toggle Switch</td>
+              <td><input type="checkbox" unchecked name="ultrasonic4_toggle" id="ultrasonic4_toggle"></td>
+            </tr>
+            
+          </thead>
+            
+          <tbody>
+            <tr>
+              <td class='ultrasonic4DataHeading' >RPM: </td>
+              <td class="ultrasonic4_value" id='ultrasonic4_value' align="center" width="20%"></td>
+            </tr>
+            <tr>
+              <td class='graph' colspan="2" height="100" align="center" >
+                <button class="clear_data_button" onclick="clearDataUltrasonic4()">Clear Data</button>
+
+
+                <div id="ultrasonic4_chart" style="height: 300px; width: 100%;"></div>
+
+
+
+              </td>
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+
+
+
+
+      <!-- IR -->
+      
+      
+      <!-- Camera
+
+      <div class="col-lg-6 col-md-12 camera_class " width="100%">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="2" align="center">Camera Feed</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >Toggle Switch</td>
+              <td><input type="checkbox" unchecked name="camera_toggle" id="camera_toggle" unchecked ></td>
+            </tr>
+            <tr class="">
+              <td colspan="2" align="center" id="camera_td">
+                <iframe src="" height="380px" width="680px" frameborder="0" ></iframe>
+              </td>
+            </tr>
+            </thead>
+            
+          <tbody>
+          </tbody>
+        </table>
+        
+      </div>
+
+  camera    -->
+
+      <!-- <div class="col-lg-3 col-md-12">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="2" align="center">Ultrasonic Sensor</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >Toggle Switch</td>
+              <td><input type="checkbox" unchecked name="ultrasonic2_toggle" id="ultrasonic2_toggle"></td>
+            </tr>
+            
+          </thead>
+            
+          <tbody>
+            <tr>
+              <td class='ultrasonic2DataHeading' >Distance: </td>
+              <td class="ultrasonic2_value" id='ultrasonic2_value' width="20%"></td>
+            </tr>
+            <tr>
+              <td class='graph' colspan="2" height="100" align="center" >
+                
+
+                <button class="clear_data_button" onclick="clearDataUltrasonic2()" >Clear Data</button>
+
+
+                <div id="ultrasonic2_chart" style="height: 300px; width: 100%;"></div>
+
+
+              </td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div> -->
+
+
+<!-- 
+    <div class="col-lg-12 col-md-12 crack">
+        <table class="table table-bordered crackTable table-striped table-hover table-sm">
+          <thead class="thead-dark">
+            <tr class="bg-dark text-light">
+              <td colspan="5" align="center">Cracks</td>
+            </tr>
+            <tr class="bg-dark text-light">
+              <td >S No.</td>
+              <td>Latitude</td>
+              <td>Longitude</td>
+              <td>Intensity</td>
+              <td>Snapshot</td>
+            </tr>
+            
+          </thead>
+            
+          <tbody id="crackTR"> -->
+           
+            <!-- <tr>
+              <td class='ultrasonic2DataHeading' >Distance: </td>
+              <td class="ultrasonic2_value" id='ultrasonic2_value' width="20%"></td>
+            </tr>
+            <tr>
+              <td class='graph' colspan="2" height="100" align="center" >
+                
+
+                <button class="clear_data_button" onclick="clearDataUltrasonic2()" >Clear Data</button>
+
+
+                <div id="ultrasonic2_chart" style="height: 300px; width: 100%;"></div>
+
+
+              </td>
+            </tr> -->
+            
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+{% block body %}{% endblock %}
+</body>
+
+
+
+
+<script>
+
+</script>
+</html>
