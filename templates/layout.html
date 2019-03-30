@@ -2,12 +2,11 @@
 <html>
 
 <head>
-	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Sensor Dashboard</title>
-  </div>
-  </div>
+  <title>Sanrakshak Dashboard</title>
+  <link href="/static/favicon.png" rel="icon" sizes="64x64" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="/static/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="/static/css/personal.css" />
@@ -15,25 +14,60 @@
   <script src="/static/js/bootstrap.min.js"></script>
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
-
+ 
 </head>
-
+<script src='https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js'></script>
+<div id="particles-js"></div>
 <body>
   <!-- TODO: Add div to flash messages by using bootstrap -->
   <!-- TODO: Make it so that in autonomous mode, no data is sent -->
   <!-- Navbar -->
-  <nav class="navbar navbar-dark bg-dark">
+  <!-- <nav class="navbar navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="#">Sensor Dashboard</a>
       <div class="navbar-nav mr-auto">
         <a class="nav-item nav-link" href="#"></a>
       </div>
     </div>
-  </nav>
+  </nav> -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+		<div class="brand_pane">
+			<a class="navbar-brand nav_h" ><img class="logo" src="/static/icon.svg"></a>
+		</div>
+		<div class="sidebar sidebar-move">
+			<div class="nav_head">NAVIGATION</div>
+			<a><div class="nav_items nav_h" id="nav_h"><span></span>TEMPERATURE</div></a>
+			<a ><div class="nav_items nav_d" id="nav_d"><span></span>VOLTAGE</div></a>
+			<a ><div class="nav_items nav_f" id="nav_f"><span></span>CURRENT RATING</div></a>
+			<a ><div class="nav_items nav_c" id="nav_c"><span></span>RPM</div></a>
+			<div class="nav-menu-button sidebar-button-move">
+				<div class="navbar-toggler" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<div class="line-menu half start"></div>
+					<div class="line-menu"></div>
+					<div class="line-menu half end"></div>
+				</div>
+			</div>
+		</div>
+		<div class="sidebar_cover"></div>
+		<div class="navbar-menu collapse navbar-collapse " id="navbarResponsive">
+			<ul class="nav navbar-nav ml-auto" id="navmenu">
+				<li class="nav-item item1">
+					<a class="nav-link js-scroll-trigger nav_d" >Voltage</a>
+				</li>
+				<li class="nav-item item2">
+					<a class="nav-link js-scroll-trigger nav_f" >Current Rating</a>
+				</li>
+				<li class="nav-item item3">
+					<a class="nav-link js-scroll-trigger nav_c">RPM</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
 
+  
 
   <!-- Form -->
-  <div class="container mt-4">
+  <div class="container mt-4 scroll_h">
     <!-- Command Execution Input -->
     <div class="row">
       <div class="col-10">
@@ -42,10 +76,16 @@
 
       <div class="col-2">
         <div class="text-center">
-          <button class="btn btn-info btn-block" onclick="sendCommand()">Execute</button>
-          <input class="btn btn-info btn-block" type="checkbox" unchecked name="all_toggle" id="all_toggle"></td>
+          <button class="btn btn-info btn-block" onclick="sendCommand()">OK</button>
         </div>
       </div>
+      <div class="col-10">
+        <input type="range" id="myRange" step="10" oninput="sliderChange(this.value)">
+      </div>
+      <div class="col-2">
+        <p id="myRangeVal" class="btn btn-info btn-block"/>50</p>
+      </div>
+      
       
     </div>
   </div>
@@ -57,8 +97,8 @@
     <div class="row">
 
       <!-- Voltage -->
-      <div class="col-lg-6 col-md-12">
-        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+      <div class="col-lg-6 col-md-12" data-anchor="temp">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm chartpane">
           <thead class="thead-dark">
             <tr class="bg-dark text-light">
               <td colspan="2" align="center">Temperature</td>
@@ -67,7 +107,6 @@
               <td >Toggle Switch</td>
               <td><input type="checkbox" unchecked name="ultrasonic_toggle" id="ultrasonic_toggle"></td>
             </tr>
-            
           </thead>
             
           <tbody>
@@ -96,8 +135,8 @@
       <!-- Current -->
 
 
-      <div class="col-lg-6 col-md-12">
-        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+      <div class="col-lg-6 col-md-12 scroll_d" data-anchor="volt">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm chartpane">
           <thead class="thead-dark">
             <tr class="bg-dark text-light">
               <td colspan="2" align="center">Voltage</td>
@@ -132,8 +171,8 @@
       </div>
 
 
-      <div class="col-lg-6 col-md-12">
-        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+      <div class="col-lg-6 col-md-12 scroll_f " data-anchor="curr">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm chartpane">
           <thead class="thead-dark">
             <tr class="bg-dark text-light">
               <td colspan="2" align="center">Current Rating</td>
@@ -168,8 +207,8 @@
       </div>
 
 
-      <div class="col-lg-6 col-md-12">
-        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+      <div class="col-lg-6 col-md-12 scroll_c " data-anchor="rpm">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm chartpane">
           <thead class="thead-dark">
             <tr class="bg-dark text-light">
               <td colspan="2" align="center">RPM</td>
@@ -203,6 +242,7 @@
         </table>
       </div>
 
+      
 
 
 
@@ -211,10 +251,10 @@
       <!-- IR -->
       
       
-      <!-- Camera
+      Camera
 
       <div class="col-lg-6 col-md-12 camera_class " width="100%">
-        <table class="table table-bordered gpsTable table-striped table-hover table-sm">
+        <table class="table table-bordered gpsTable table-striped table-hover table-sm chartpane">
           <thead class="thead-dark">
             <tr class="bg-dark text-light">
               <td colspan="2" align="center">Camera Feed</td>
@@ -225,7 +265,7 @@
             </tr>
             <tr class="">
               <td colspan="2" align="center" id="camera_td">
-                <iframe src="" height="380px" width="680px" frameborder="0" ></iframe>
+                <iframe src="" height="380px" width="420px" frameborder="0" ></iframe>
               </td>
             </tr>
             </thead>
@@ -236,7 +276,7 @@
         
       </div>
 
-  camera    -->
+  camera   
 
       <!-- <div class="col-lg-3 col-md-12">
         <table class="table table-bordered gpsTable table-striped table-hover table-sm">
@@ -323,6 +363,212 @@
 
 
 <script>
+
+
+
+  $(".nav_h").click(function() {
+    $('html, body').animate({ scrollTop:$(".scroll_h").offset().top}, 500);
+});
+$(".nav_d").click(function() {
+    $('html, body').animate({ scrollTop:$(".scroll_d").offset().top}, 500);
+});
+$(".nav_f").click(function() {
+    $('html, body').animate({ scrollTop:$(".scroll_f").offset().top}, 500);
+});
+$(".nav_c").click(function() {
+    $('html, body').animate({ scrollTop:$(".scroll_c").offset().top}, 500);
+});
+
+var wrapperMenu = document.querySelector('.navbar-toggler');
+		$(window).on('resize', function(){
+			$(".sidebar").css('height', $(window).height());
+		});
+		$(document).ready(function(){
+			$(".sidebar").css('height', $(window).height());
+			$(".sidebar_cover").css("background-color","rgba(0,0,0,0.8)");
+			$(".sidebar_cover").fadeOut(800);
+		});
+		
+		var sidebar_one=true;
+		$(".navbar-toggler").click(function(){
+			if(parseFloat($(".sidebar").css('marginLeft')) == 0 && !sidebar_one){
+				$(".sidebar-move").css("margin-left",0-$('.sidebar').width());$(".sidebar_cover").fadeOut(800);sidebar_one=true;
+				wrapperMenu.classList.toggle('open');
+			}
+			else if(parseFloat($(".sidebar").css('marginLeft')) == -250 && sidebar_one)
+			{
+				$(".sidebar-move").css("margin-left","0px");$(".sidebar_cover").fadeIn(800);sidebar_one=false;
+				wrapperMenu.classList.toggle('open'); 
+			}
+		}); 
+		$(".nav_items").click(function(){
+			$('.navbar-toggler').click();
+			$(".sidebar-move").css("margin-left",0-$('.sidebar').width());
+		}); 
+		$(".sidebar_cover").click(function(){
+			if(parseFloat($(".sidebar").css('marginLeft')) == 0){$('.navbar-toggler').click();}
+		});
+
+		$(".nav_items").mouseenter(function(e){
+			var offset = $(this).offset();
+			var relativeX = (e.pageX - offset.left);
+			var relativeY = (e.pageY - offset.top);
+			$("#"+this.id +" span").css({
+				'left' : relativeX,
+				'top' : relativeY,
+				'width' : '525px',
+				'height' : '525px'
+			});
+		});
+		$(".nav_items").mouseleave(function(e){
+			var offset = $(this).offset();
+			var relativeX = (e.pageX - offset.left);
+			var relativeY = (e.pageY - offset.top);
+			$("#"+this.id +" span").css({
+				'left' : relativeX,
+				'top' : relativeY,
+				'width' : '0',
+				'height' : '0'
+			});
+		});
+
+
+
+
+    document.addEventListener("DOMContentLoaded",
+        function() {
+            var div, n,
+                v = document.getElementsByClassName("youtube-player");
+            for (n = 0; n < v.length; n++) {
+                div = document.createElement("div");
+                div.setAttribute("data-id", v[n].dataset.id);
+                div.innerHTML = labnolThumb(v[n].dataset.id);
+                div.onclick = labnolIframe;
+                v[n].appendChild(div);
+            }
+        });
+
+    function labnolThumb(id) {
+        var thumb = '<img src="/img/yt-thumb.jpg" title="youtube video" alt="Youtube Video">',
+            play = '<div class="play"></div>';
+        return thumb + play;
+    }
+
+    function labnolIframe() {
+        var iframe = document.createElement("iframe");
+        var embed = "https://www.youtube.com/embed/ID?autoplay=1";
+        iframe.setAttribute("src", embed.replace("ID", this.dataset.id));
+        iframe.setAttribute("frameborder", "0");
+        iframe.setAttribute("allowfullscreen", "1");
+        this.parentNode.replaceChild(iframe, this);
+    }
+
+// ParticlesJS Config.
+particlesJS("particles-js", {
+  "particles": {
+    "number": {
+      "value": 80,
+      "density": {
+        "enable": true,
+        "value_area": 700
+      }
+    },
+    "color": {
+      "value": "#ffffff"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+    },
+    "opacity": {
+      "value": 0.5,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 3,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#ffffff",
+      "opacity": 0.6,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 6,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1
+        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true
+});
 
 </script>
 </html>

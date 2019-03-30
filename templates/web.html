@@ -4,6 +4,22 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
+function sliderChange(val) {
+
+    console.log(val);
+    document.getElementById('myRangeVal').innerText = val;
+    
+    var arrr='abcdefghij'.split('');
+    
+    console.log(arrr[val/10]);
+    $.ajax({
+          url: "/private",
+          type: "get",
+          data: {jsdata: arrr[val/10]},
+          
+    }); 
+  
+}
 function captureCrack(inten){
   getGPS();
   console.log(lat/100);
@@ -592,19 +608,19 @@ setInterval(function(){
 //     } else {
 //         toggleSwitch(false);
 //     }
-// },300);
-// setInterval(function(){
-//     cameraHTMLlink = "<iframe src='http://192.168.43.21/javascript_simple.html' height='380px' width='680px' frameborder='0' ></iframe>"
-//     cameraHTMLblankLink = "<iframe src='' height='380px' width='680px' frameborder='0' ></iframe>"
-//     $('input[id="camera_toggle"]').click(function(){
-//       // alert("asda");
-//     if ($("input[id=camera_toggle]").is(":checked")) {
-//         $("#camera_td").html(cameraHTMLlink);
-//     } else {
-//         $("#camera_td").html(cameraHTMLblankLink);
-//     }
-//     });
-// },1000);
+// },300); 
+setInterval(function(){
+    cameraHTMLlink = "<iframe src='http://192.168.43.21/javascript_simple.html' height='380px' width='420px' frameborder='0' ></iframe>"
+    cameraHTMLblankLink = "<iframe src='' height='380px' width='420px' frameborder='0' ></iframe>"
+    $('input[id="camera_toggle"]').click(function(){
+      // alert("asda");
+    if ($("input[id=camera_toggle]").is(":checked")) {
+        $("#camera_td").html(cameraHTMLlink);
+    } else {
+        $("#camera_td").html(cameraHTMLblankLink);
+    }
+    });
+},1000);
 
 
 // setInterval(function(){

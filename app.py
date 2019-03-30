@@ -24,6 +24,7 @@ def hello():
 	return "enter / sensors"
 
 
+
 @app.route("/<string:c>/<string:b>")
 def portt(c,b):
 	try:
@@ -119,6 +120,9 @@ def private():
 		return render_template('m.html', val=q)
 	if text[0]=="j":
 		q = opened_port.sendMotor("j")
+		return render_template('m.html', val=q)
+	if text[0]=="k":
+		q = opened_port.sendMotor("k")
 		return render_template('m.html', val=q)
 	
 
